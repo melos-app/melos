@@ -2,7 +2,9 @@ package main
 
 import (
 	"bufio"
+	"encoding/xml"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 	"regexp"
@@ -164,7 +166,8 @@ func (t *typ) update(s songs) error {
 	return nil
 }
 
-func main() {
+func updateSongsInTypstFile(fName string) {
+
 	log.Println("Update list of songs")
 	files, err := os.ReadDir("svg")
 	if err != nil {
@@ -181,7 +184,7 @@ func main() {
 		}
 	}
 
-	t := newTyp("hymns.typ")
+	t := newTyp(fName)
 
 	err = t.scan()
 	if err != nil {
@@ -194,4 +197,61 @@ func main() {
 	if err != nil {
 		log.Printf("Error updating typ file: %v", err)
 	}
+}
+
+func removeTitle(fileName string) {
+	// Read XML file
+	data, err := ioutil.ReadFile(fileName)
+	if err != nil {
+		panic(err)
+	}
+
+	// Parse XML into a document
+	var doc interface{}
+	err = xml.Unmarshal(data, &doc)
+	if err != nil {
+		panic(err)
+	}
+
+	// Remove elements with style='title'
+	removeElements(doc)
+
+	// Marshal back to XML
+	newData, err := xml.MarshalIndent(doc, "", "  ")
+	if err != nil {
+		panic(err)
+	}
+
+	// Write back to file
+	err = ioutil.WriteFile(fileName, newData, 0644)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func removeElements(node interface{}) {
+	switch v := node.(type) {
+	case map[string]interface{}:
+		if style, ok := v["style"]; ok && style == "title" {
+			delete(v, "Text")
+		}
+		for _, value := range v {
+			removeElements(value)
+		}
+	case []interface{}:
+		for _, item := range v {
+			removeElements(item)
+		}
+	}
+}
+
+func main() {
+	if len(os.Args) < 2 {
+		log.Println("Usage: ", os.Args[0], "typst_file")
+		os.Exit(-1)
+	}
+
+	typstFileName := os.Args[1]
+
+	updateSongsInTypstFile(typstFileName)
 }
