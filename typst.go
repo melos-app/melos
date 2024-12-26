@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 	"regexp"
 	"strings"
 )
@@ -167,8 +168,10 @@ func (t *typ) update(s songs) error {
 // UpdateSongsInTypstFile updates the typ file with the list of songs
 func UpdateSongsInTypstFile(fName string) {
 
+	fDir := filepath.Dir(fName)
+
 	log.Println("Update list of songs")
-	files, err := os.ReadDir("svg")
+	files, err := os.ReadDir(filepath.Join(fDir, "svg"))
 	if err != nil {
 		log.Fatal(err)
 	}
