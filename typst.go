@@ -181,7 +181,7 @@ func updateSongsInTypstFile(fName string) {
 	for _, file := range files {
 		err := s.addFile(file.Name())
 		if err != nil {
-			log.Printf("Error adding file %f: %f", file.Name(), err)
+			log.Printf("Error adding file %v: %v", file.Name(), err)
 			os.Exit(-1)
 		}
 	}
