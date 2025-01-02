@@ -3,8 +3,6 @@ package main
 import (
 	"log"
 	"os"
-
-	"github.com/melos-app/melos"
 )
 
 func main() {
@@ -14,5 +12,5 @@ func main() {
 		os.Exit(-1)
 	}
 
-	melos.UpdateSongsInTypstFile(os.Args[1])
+	updateSongsInTypstFile(os.Args[1])
 }

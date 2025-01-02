@@ -1,13 +1,13 @@
-package melos
+package main
 
 import (
 	"encoding/xml"
-	"io/ioutil"
+	"os"
 )
 
-func MusescoreRemoveTitle(fileName string) {
+func musescoreRemoveTitle(fileName string) {
 	// Read XML file
-	data, err := ioutil.ReadFile(fileName)
+	data, err := os.ReadFile(fileName)
 	if err != nil {
 		panic(err)
 	}
@@ -29,7 +29,7 @@ func MusescoreRemoveTitle(fileName string) {
 	}
 
 	// Write back to file
-	err = ioutil.WriteFile(fileName, newData, 0644)
+	err = os.WriteFile(fileName, newData, 0644)
 	if err != nil {
 		panic(err)
 	}
