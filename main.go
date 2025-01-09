@@ -20,13 +20,19 @@ func main() {
 	musescoreXDir := filepath.Join(typstFileDir, "musescorex")
 	// svgDir := filepath.Join(typstFileDir, "svg")
 
-	// TODO: uncompress
 	err := musescoreUncompress(musescoreDir, musescoreXDir)
 	if err != nil {
-		log.Println("Error uncompressing musescore files: ", err)
+		log.Println("Error uncompressing musescore files:", err)
 		os.Exit(-1)
 	}
-	// TODO: remove title
+
+	return
+
+	err = musescoreRemoveTitles(musescoreXDir)
+	if err != nil {
+		log.Println("Error removing title:", err)
+	}
+
 	// TODO: generate svg
 	updateSongsInTypstFile(typstFileName)
 	// TODO: make book

@@ -1,43 +1,74 @@
 package main
 
 import (
-	"encoding/xml"
+	"bytes"
 	"fmt"
 	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
+
+	"github.com/antchfx/xmlquery"
 )
 
-func musescoreRemoveTitle(fileName string) {
+func musescoreRemoveTitles(dir string) error {
+	files, err := filepath.Glob(dir + "/*/*.mscx")
+
+	if err != nil {
+		return err
+	}
+
+	for _, f := range files {
+		err := musescoreRemoveTitleFile(f)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func musescoreRemoveTitleFile(fileName string) error {
 	// Read XML file
 	data, err := os.ReadFile(fileName)
 	if err != nil {
-		panic(err)
+		return err
 	}
 
-	// Parse XML into a document
-	var doc interface{}
-	err = xml.Unmarshal(data, &doc)
-	if err != nil {
-		panic(err)
-	}
-
-	// Remove elements with style='title'
-	removeElements(doc)
-
-	// Marshal back to XML
-	newData, err := xml.MarshalIndent(doc, "", "  ")
-	if err != nil {
-		panic(err)
-	}
+	newData, err := removeTextWithTitleStyle(data)
 
 	// Write back to file
 	err = os.WriteFile(fileName, newData, 0644)
 	if err != nil {
-		panic(err)
+		return err
 	}
+
+	return nil
+}
+
+func removeTextWithTitleStyle(input []byte) ([]byte, error) {
+	// Parse the XML document
+	doc, err := xmlquery.Parse(bytes.NewReader(input))
+	if err != nil {
+		return nil, err
+	}
+
+	// Find all Text elements with style='title'
+	nodes := xmlquery.Find(doc, "//Text[style='title']")
+
+	// Remove each matching node from the tree
+	for _, node := range nodes {
+		xmlquery.RemoveFromTree(node)
+	}
+
+	// Create a buffer to store the output
+	var output bytes.Buffer
+
+	// Write the modified XML to the buffer
+	doc.WriteWithOptions(&output, xmlquery.WithOutputSelf())
+
+	return output.Bytes(), nil
 }
 
 func removeElements(node interface{}) {
