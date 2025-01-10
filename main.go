@@ -26,8 +26,6 @@ func main() {
 		os.Exit(-1)
 	}
 
-	return
-
 	err = musescoreRemoveTitles(musescoreXDir)
 	if err != nil {
 		log.Println("Error removing title:", err)

@@ -31,6 +31,7 @@ func musescoreRemoveTitles(dir string) error {
 
 func musescoreRemoveTitleFile(fileName string) error {
 	// Read XML file
+	log.Println("Remove title: ", fileName)
 	data, err := os.ReadFile(fileName)
 	if err != nil {
 		return err
@@ -69,22 +70,6 @@ func removeTextWithTitleStyle(input []byte) ([]byte, error) {
 	doc.WriteWithOptions(&output, xmlquery.WithOutputSelf())
 
 	return output.Bytes(), nil
-}
-
-func removeElements(node interface{}) {
-	switch v := node.(type) {
-	case map[string]interface{}:
-		if style, ok := v["style"]; ok && style == "title" {
-			delete(v, "Text")
-		}
-		for _, value := range v {
-			removeElements(value)
-		}
-	case []interface{}:
-		for _, item := range v {
-			removeElements(item)
-		}
-	}
 }
 
 func musescoreUncompress(musescoreDir, musescoreXDir string) error {
