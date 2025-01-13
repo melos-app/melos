@@ -86,25 +86,38 @@ func musescoreUncompress(musescoreDir, musescoreXDir string) error {
 
 	for _, f := range files {
 		if !f.IsDir() && strings.ToLower(filepath.Ext(f.Name())) == ".mscz" {
-			log.Println("Uncompressing: ", f.Name())
-			filePath := filepath.Join(musescoreDir, f.Name())
-			base := strings.TrimSuffix(f.Name(), filepath.Ext(f.Name()))
-			songXDir := filepath.Join(musescoreXDir, base)
-			// Create directory for the file
-			err = os.MkdirAll(songXDir, 0755)
-			if err != nil {
-				return fmt.Errorf("Error creating directory: %w", err)
+			var i int
+			for i = 0; i < 3; i++ {
+				log.Println("Uncompressing: ", f.Name())
+				filePath := filepath.Join(musescoreDir, f.Name())
+				base := strings.TrimSuffix(f.Name(), filepath.Ext(f.Name()))
+				songXDir := filepath.Join(musescoreXDir, base)
+				// Create directory for the file
+				err = os.MkdirAll(songXDir, 0755)
+				if err != nil {
+					return fmt.Errorf("Error creating directory: %w", err)
+				}
+
+				// Run mscore command
+				outputPath := filepath.Join(songXDir, base+".mscx")
+				cmd := exec.Command("mscore", filePath, "--export-to", outputPath)
+				err = cmd.Run()
+				if err == nil {
+					break
+				}
+
+				log.Printf("Error running mscore: %v, trying again\n", err)
 			}
 
-			// Run mscore command
-			outputPath := filepath.Join(songXDir, base+".mscx")
-			cmd := exec.Command("mscore", filePath, "--export-to", outputPath)
-			err = cmd.Run()
-			if err != nil {
-				return fmt.Errorf("Error running mscore: %w\n", err)
+			if i == 3 {
+				return fmt.Errorf("Error running mscore: %v, failed 3 times, aborting\n", err)
 			}
 		}
 	}
 
+	return nil
+}
+
+func musescoreGenerateSvg(musescoreXDir, svgDir string) error {
 	return nil
 }
