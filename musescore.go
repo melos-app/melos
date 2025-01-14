@@ -119,5 +119,36 @@ func musescoreUncompress(musescoreDir, musescoreXDir string) error {
 }
 
 func musescoreGenerateSvg(musescoreXDir, svgDir string) error {
+	fmt.Println("xdir", musescoreXDir)
+	os.RemoveAll(svgDir)
+	err := os.Mkdir(svgDir, 0755)
+	if err != nil {
+		return err
+	}
+
+	files, err := filepath.Glob(musescoreXDir + "/*/*.mscx")
+
+	if err != nil {
+		return err
+	}
+
+	for _, f := range files {
+		log.Println("Exporting to SVG: ", f)
+		base := strings.TrimSuffix(filepath.Base(f), filepath.Ext(f))
+		// Create directory for the file
+		if err != nil {
+			return fmt.Errorf("Error creating directory: %w", err)
+		}
+
+		// Run mscore command
+		// mscore "$file" --export-to "svg/${base}.svg" -T 0
+		outputPath := filepath.Join(svgDir, base+".svg")
+		cmd := exec.Command("mscore", f, "--export-to", outputPath, "-T", "0")
+		err = cmd.Run()
+		if err == nil {
+			break
+		}
+	}
+
 	return nil
 }

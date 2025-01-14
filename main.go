@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
 	"os"
 	"path/filepath"
@@ -14,6 +15,8 @@ func main() {
 	generateSvg := flag.Bool("generateSvg", false, "generate svg files")
 	updateTypst := flag.Bool("updateTypst", false, "update list of songs in typst file")
 	makeBook := flag.Bool("makeBook", false, "Generate PDF book file")
+
+	flag.Parse()
 
 	if !*uncompress && !*removeTitles && !*generateSvg && !*updateTypst && !*makeBook {
 		*uncompress = true
@@ -33,6 +36,7 @@ func main() {
 
 	musescoreDir := filepath.Join(typstFileDir, "musescore")
 	musescoreXDir := filepath.Join(typstFileDir, "musescorex")
+	fmt.Println("CLIFF: coreXDir=", musescoreXDir)
 	svgDir := filepath.Join(typstFileDir, "svg")
 
 	if *uncompress {
@@ -51,7 +55,6 @@ func main() {
 	}
 
 	if *generateSvg {
-		// TODO: need to finish this
 		err := musescoreGenerateSvg(musescoreXDir, svgDir)
 		if err != nil {
 			log.Println("Error generating svg:", err)
