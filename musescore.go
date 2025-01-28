@@ -119,7 +119,7 @@ func musescoreUncompress(musescoreDir, musescoreXDir string) error {
 }
 
 func musescoreGenerateSvg(musescoreXDir, svgDir string) error {
-	fmt.Println("xdir", musescoreXDir)
+	fmt.Println("svgDir", svgDir)
 	os.RemoveAll(svgDir)
 	err := os.Mkdir(svgDir, 0755)
 	if err != nil {
@@ -145,8 +145,8 @@ func musescoreGenerateSvg(musescoreXDir, svgDir string) error {
 		outputPath := filepath.Join(svgDir, base+".svg")
 		cmd := exec.Command("mscore", f, "--export-to", outputPath, "-T", "0")
 		err = cmd.Run()
-		if err == nil {
-			break
+		if err != nil {
+			return fmt.Errorf("Error running mscore: %w", err)
 		}
 	}
 

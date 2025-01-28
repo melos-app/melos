@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"regexp"
 	"strings"
@@ -199,4 +200,20 @@ func updateSongsInTypstFile(fName string) {
 	if err != nil {
 		log.Printf("Error updating typ file: %v", err)
 	}
+}
+
+func makeTypstBook(fPath string) error {
+	fName := filepath.Base(fPath)
+	fDir := filepath.Dir(fPath)
+	cmd := exec.Command("typst", "compile", fName)
+	cmd.Dir = fDir
+	out, err := cmd.Output()
+	if out != nil {
+		log.Println(out)
+	}
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

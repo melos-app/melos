@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"log"
 	"os"
 	"path/filepath"
@@ -31,12 +30,11 @@ func main() {
 		os.Exit(-1)
 	}
 
-	typstFileName := os.Args[1]
+	typstFileName := *file
 	typstFileDir := filepath.Dir(typstFileName)
 
 	musescoreDir := filepath.Join(typstFileDir, "musescore")
 	musescoreXDir := filepath.Join(typstFileDir, "musescorex")
-	fmt.Println("CLIFF: coreXDir=", musescoreXDir)
 	svgDir := filepath.Join(typstFileDir, "svg")
 
 	if *uncompress {
@@ -66,6 +64,9 @@ func main() {
 	}
 
 	if *makeBook {
-		// TODO: make book
+		err := makeTypstBook(typstFileName)
+		if err != nil {
+			log.Println("Error making book: ", err)
+		}
 	}
 }
