@@ -5,6 +5,8 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+
+	"github.com/melos-app/melos"
 )
 
 func main() {
@@ -38,7 +40,7 @@ func main() {
 	svgDir := filepath.Join(typstFileDir, "svg")
 
 	if *uncompress {
-		err := musescoreUncompress(musescoreDir, musescoreXDir)
+		err := melos.MusescoreUncompress(musescoreDir, musescoreXDir)
 		if err != nil {
 			log.Println("Error uncompressing musescore files:", err)
 			os.Exit(-1)
@@ -46,25 +48,25 @@ func main() {
 	}
 
 	if *removeTitles {
-		err := musescoreRemoveTitles(musescoreXDir)
+		err := melos.MusescoreRemoveTitles(musescoreXDir)
 		if err != nil {
 			log.Println("Error removing title:", err)
 		}
 	}
 
 	if *generateSvg {
-		err := musescoreGenerateSvg(musescoreXDir, svgDir)
+		err := melos.MusescoreGenerateSvg(musescoreXDir, svgDir)
 		if err != nil {
 			log.Println("Error generating svg:", err)
 		}
 	}
 
 	if *updateTypst {
-		updateSongsInTypstFile(typstFileName)
+		melos.UpdateSongsInTypstFile(typstFileName)
 	}
 
 	if *makeBook {
-		err := makeTypstBook(typstFileName)
+		err := melos.MakeTypstBook(typstFileName)
 		if err != nil {
 			log.Println("Error making book: ", err)
 		}

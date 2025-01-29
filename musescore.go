@@ -1,4 +1,4 @@
-package main
+package melos
 
 import (
 	"bytes"
@@ -12,7 +12,7 @@ import (
 	"github.com/antchfx/xmlquery"
 )
 
-func musescoreRemoveTitles(dir string) error {
+func MusescoreRemoveTitles(dir string) error {
 	files, err := filepath.Glob(dir + "/*/*.mscx")
 
 	if err != nil {
@@ -72,7 +72,7 @@ func removeTextWithTitleStyle(input []byte) ([]byte, error) {
 	return output.Bytes(), nil
 }
 
-func musescoreUncompress(musescoreDir, musescoreXDir string) error {
+func MusescoreUncompress(musescoreDir, musescoreXDir string) error {
 	os.RemoveAll(musescoreXDir)
 	err := os.Mkdir(musescoreXDir, 0755)
 	if err != nil {
@@ -118,7 +118,7 @@ func musescoreUncompress(musescoreDir, musescoreXDir string) error {
 	return nil
 }
 
-func musescoreGenerateSvg(musescoreXDir, svgDir string) error {
+func MusescoreGenerateSvg(musescoreXDir, svgDir string) error {
 	fmt.Println("svgDir", svgDir)
 	os.RemoveAll(svgDir)
 	err := os.Mkdir(svgDir, 0755)

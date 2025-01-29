@@ -1,4 +1,4 @@
-package main
+package melos
 
 import (
 	"bufio"
@@ -166,8 +166,8 @@ func (t *typ) update(s songs) error {
 	return nil
 }
 
-// updateSongsInTypstFile updates the typ file with the list of songs
-func updateSongsInTypstFile(fName string) {
+// UpdateSongsInTypstFile updates the typ file with the list of songs
+func UpdateSongsInTypstFile(fName string) {
 
 	fDir := filepath.Dir(fName)
 
@@ -202,7 +202,7 @@ func updateSongsInTypstFile(fName string) {
 	}
 }
 
-func makeTypstBook(fPath string) error {
+func MakeTypstBook(fPath string) error {
 	fName := filepath.Base(fPath)
 	fDir := filepath.Dir(fPath)
 	cmd := exec.Command("typst", "compile", fName)
